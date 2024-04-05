@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuberDinner.Api.Common.Http;
+using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace BuberDinner.Api.Errors
+namespace BuberDinner.Api.Common.Errors
 {
     internal sealed class BuberDinnerProblemDetailsFactory(
         IOptions<ApiBehaviorOptions> options,
@@ -82,13 +84,22 @@ namespace BuberDinner.Api.Errors
             var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
             if (traceId != null)
             {
-                problemDetails.Extensions["traceId"] = traceId;
+                problemDetails.Extensions[ProblemDetailsExtensionsKeys.TraceId] = traceId;
             }
 
-            problemDetails.Extensions["customProperty"] = "customValue";
+            AddErrorCodes(httpContext, problemDetails);
 
             _configure?.Invoke(new() { HttpContext = httpContext!, ProblemDetails = problemDetails });
         }
 
+        private void AddErrorCodes(HttpContext? httpContext, ProblemDetails problemDetails)
+        {
+            List<Error>? errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
+
+            if (errors is not null)
+            {
+                problemDetails.Extensions[ProblemDetailsExtensionsKeys.ErrorCodes] = errors.Select(e => e.Code).Distinct();
+            }
+        }
     }
 }
