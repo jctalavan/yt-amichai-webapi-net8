@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace BuberDinner.Api.Errors
+namespace BuberDinner.Api.Common.Errors
 {
     internal sealed class BuberDinnerProblemDetailsFactory(
         IOptions<ApiBehaviorOptions> options,
