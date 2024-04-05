@@ -2,18 +2,17 @@
 using BuberDinner.Application.Services.Authentication.Common;
 using BuberDinner.Application.Services.Authentication.Queries.Login;
 using BuberDinner.Contracts.Authentication;
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BuberDinner.Api.Controllers
 {
+    [AllowAnonymous]
     [Route("api/auth")]
-    [ApiController]
-    public class AuthenticationController(IMediator mediator, IMapper mapper)
-        : ControllerBase
+    public class AuthenticationController(IMediator mediator, IMapper mapper) : ApiController
     {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
@@ -23,11 +22,11 @@ namespace BuberDinner.Api.Controllers
         {
             RegisterCommand command = _mapper.Map<RegisterCommand>(request);
 
-            AuthenticationResult authenticationResult = await _mediator.Send(command);
+            ErrorOr<AuthenticationResult> authenticationResult = await _mediator.Send(command);
 
-            AuthenticationResponse authenticationResponse = _mapper.Map<AuthenticationResponse>(authenticationResult);
-
-            return Ok(authenticationResponse);
+            return authenticationResult.Match(
+                onValue: result => Ok(_mapper.Map<AuthenticationResponse>(result)),
+                onError: errors => Problem(errors));
         }
 
         [HttpPost("login")]
@@ -35,11 +34,11 @@ namespace BuberDinner.Api.Controllers
         {
             LoginQuery query = _mapper.Map<LoginQuery>(request);
 
-            AuthenticationResult authenticationResult = await _mediator.Send(query);
+            ErrorOr<AuthenticationResult> authenticationResult = await _mediator.Send(query);
 
-            AuthenticationResponse authenticationResponse = _mapper.Map<AuthenticationResponse>(authenticationResult);
-
-            return Ok(authenticationResponse);
+            return authenticationResult.Match(
+                onValue: result => Ok(_mapper.Map<AuthenticationResponse>(result)),
+                onError: errors => Problem(errors));
         }
     }
 }
