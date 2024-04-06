@@ -1,0 +1,5 @@
+# @host=https://localhost:7280
+@host=http://localhost:5271
+
+GET {{host}}/api/dinners
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3OGEyZGExNi1jYmRmLTRjNzUtODM4ZC1kNjZlYTkzMTgyN2EiLCJnaXZlbl9uYW1lIjoiSnVhbiBDYXJsb3MiLCJmYW1pbHlfbmFtZSI6IlRhbGF2YW4iLCJqdGkiOiJiODI2YzRjNC0xYjg3LTQ5OGUtYTE2Mi1hMjhkNTAwMjgzODEiLCJleHAiOjE3MTIzOTUzNjUsImlzcyI6IkJ1YmVyRGlubmVyIiwiYXVkIjoiQnViZXJEaW5uZXIifQ.pbucUpHVX0zAJCyKLFi0oyRp3FcJ1Q6SM5ESegO0VoQ

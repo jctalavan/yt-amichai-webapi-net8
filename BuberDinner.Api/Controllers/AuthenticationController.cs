@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.Api.Controllers
 {
-    [AllowAnonymous]
     [Route("api/auth")]
+    [AllowAnonymous]
     public class AuthenticationController(IMediator mediator, IMapper mapper) : ApiController
     {
         private readonly IMediator _mediator = mediator;
